@@ -41,15 +41,6 @@ flutter:
         pluginClass: SpaSdkPlugin
       ios:
         pluginClass: SpaSdkPlugin
-      linux:
-        pluginClass: SpaSdkPlugin
-      macos:
-        pluginClass: SpaSdkPlugin
-      windows:
-        pluginClass: SpaSdkPluginCApi
-      web:
-        pluginClass: SpaSdkWeb
-        fileName: spa_sdk_web.dart
 
   # To add assets to your plugin package, add an assets section, like this:
   # assets:
