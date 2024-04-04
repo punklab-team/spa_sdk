@@ -31,8 +31,10 @@ class _MyAppState extends State<MyApp> {
     // Platform messages may fail, so we use a try/catch PlatformException.
     // We also handle the message potentially returning null.
     try {
+      _spaSdkPlugin.setKey(apiKey: 'Test key');
       platformVersion =
           await _spaSdkPlugin.getPlatformVersion() ?? 'Unknown platform version';
+      _spaSdkPlugin.getKey();
     } on PlatformException {
       platformVersion = 'Failed to get platform version.';
     }
@@ -52,10 +54,15 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Plugin example app'),
+          title: const Text('Actual plugin example'),
         ),
         body: Center(
-          child: Text('Running on: $_platformVersion\n'),
+          child: Column(
+            children: [
+              Text('Running on: $_platformVersion\n'),
+              Text("Api Key: ${_spaSdkPlugin.getKey()}")
+            ],
+          ),
         ),
       ),
     );

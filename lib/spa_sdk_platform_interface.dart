@@ -7,7 +7,7 @@ abstract class SpaSdkPlatform extends PlatformInterface {
   SpaSdkPlatform() : super(token: _token);
 
   static final Object _token = Object();
-
+  String _apiKey = '';
   static SpaSdkPlatform _instance = MethodChannelSpaSdk();
 
   /// The default instance of [SpaSdkPlatform] to use.
@@ -26,4 +26,11 @@ abstract class SpaSdkPlatform extends PlatformInterface {
   Future<String?> getPlatformVersion() {
     throw UnimplementedError('platformVersion() has not been implemented.');
   }
+
+  Future<void> setKey({required String apiKey})async {
+    _apiKey=apiKey;
+    print("set key in instance ${_instance.getKey()}");
+  }
+
+  String getKey()=>_apiKey;
 }
