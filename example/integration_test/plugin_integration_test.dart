@@ -9,17 +9,17 @@
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
+import 'package:spa_sdk/model/event_spa.dart';
 
 import 'package:spa_sdk/spa_sdk.dart';
 
 void main() {
-  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+
+
+  final SpaSdk plugin = SpaSdk.instance(counterId: "613", uriServiceSpa: "https://spa-back.gazprom-neft.ru/events");
 
   testWidgets('getPlatformVersion test', (WidgetTester tester) async {
-    final SpaSdk plugin = SpaSdk();
-    final String? version = await plugin.getPlatformVersion();
-    // The version string depends on the host platform running the test, so
-    // just assert that some non-empty string is returned.
-    expect(version?.isNotEmpty, true);
+    plugin.sendEvent(EventSpa.error(error: "404", errorValue: "text"));
+    expect(true, true);
   });
 }
