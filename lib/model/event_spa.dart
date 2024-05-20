@@ -252,10 +252,10 @@ class EventSpa {
   /// [pageLocation] is new screen uri
   /// [pageReferrer] is old screen uri
 
-  EventSpa.screenView(
-      String pageLocation,
-      String pageReferrer,
-      ) : this(
+  EventSpa.screenView({
+    required String pageLocation,
+    required String pageReferrer,
+  }) : this(
     eventType: "screen_view",
     customParam: {
       'page_location': pageLocation,
@@ -316,32 +316,134 @@ class EventSpa {
     return {
       'apiVersion': "1.0",
       'counterId' : counterId ?? '',
-      'timestamp': date.toUtc().millisecondsSinceEpoch.toString(),
+      'timestamp': date.toUtc().millisecondsSinceEpoch ~/ 1000,
       'channelType': "CustomScript",
+      'user_id': 'null',
       'channelName' : "RegEvents API",
       'eventCaption': eventType ?? '',
       'customparams': [
-        {
-          if(latitude != null) 'latitude': latitude,
-          if(longitude != null) 'longitude': longitude,
-          if(osName != null) 'os_name': osName,
-          if(deviceName != null) 'device_name': deviceName,
-          if(libraryVersion != null) 'library': libraryVersion,
-          if(ipAddress != null) 'ip_address': ipAddress,
-          if(deviceId != null) 'device_id': deviceId,
-          if(userId != null) 'user_id': userId,
-          if(sessionId != null) 'session_id': sessionId,
-          if(appScreen != null) 'app_screen': appScreen,
-          if(osVersion != null) 'os_version': osVersion,
-          if(appVersion != null) 'release_version': appVersion,
-          if(appName != null) 'app_name': appName,
-          if(platform != null) 'platform': platform,
-          if(language != null) 'language': language,
-          if(resolutionWidth != null) 'resolution_width': resolutionWidth,
-          if(resolutionHeight != null) 'resolution_height': resolutionHeight,
-          'time_zone': date.timeZoneName,
-          ...?customParam,
-        }
+        if(latitude != null)
+          {
+            'name': 'latitude',
+            'type': 'STRING',
+            'value': latitude,
+          },
+        if(longitude != null)
+          {
+            'name': 'latitude',
+            'type': 'STRING',
+            'value': longitude,
+          },
+        if(osName != null)
+          {
+            'name': 'osName',
+            'type': 'STRING',
+            'value': osName,
+          },
+        if(deviceName != null)
+          {
+            'name': 'deviceName',
+            'type': 'STRING',
+            'value': deviceName,
+          },
+        if(libraryVersion != null)
+          {
+            'name': 'libraryVersion',
+            'type': 'STRING',
+            'value': libraryVersion,
+          },
+        if(ipAddress != null)
+          {
+            'name': 'ipAddress',
+            'type': 'STRING',
+            'value': ipAddress,
+          },
+        if(deviceId != null)
+          {
+            'name': 'deviceId',
+            'type': 'STRING',
+            'value': deviceId,
+          },
+        if(userId != null)
+          {
+            'name': 'userId',
+            'type': 'STRING',
+            'value': userId,
+          },
+        if(userId != null)
+          {
+            'name': 'userId',
+            'type': 'STRING',
+            'value': userId,
+          },
+        if(sessionId != null)
+          {
+            'name': 'sessionId',
+            'type': 'STRING',
+            'value': sessionId,
+          },
+        if(appScreen != null)
+          {
+            'name': 'appScreen',
+            'type': 'STRING',
+            'value': appScreen,
+          },
+        if(osVersion != null)
+          {
+            'name': 'osVersion',
+            'type': 'STRING',
+            'value': osVersion,
+          },
+        if(appVersion != null)
+          {
+            'name': 'appVersion',
+            'type': 'STRING',
+            'value': appVersion,
+          },
+        if(appName != null)
+          {
+            'name': 'appName',
+            'type': 'STRING',
+            'value': appName,
+          },
+        if(platform != null)
+          {
+            'name': 'platform',
+            'type': 'STRING',
+            'value': platform,
+          },
+        if(language != null)
+          {
+            'name': 'language',
+            'type': 'STRING',
+            'value': language,
+          },
+        if(resolutionWidth != null)
+          {
+            'name': 'resolutionWidth',
+            'type': 'STRING',
+            'value': resolutionWidth,
+          },
+        if(resolutionHeight != null)
+          {
+            'name': 'resolutionHeight',
+            'type': 'STRING',
+            'value': resolutionHeight,
+          },
+        if(resolutionHeight != null)
+          {
+            'name': 'timeZone',
+            'type': 'STRING',
+            'value': date.timeZoneName,
+          },
+        ...?customParam?.keys.map((e) {
+          if(customParam?[e] == null) return null;
+          return {
+            'name': e,
+            'type': 'STRING',
+            'value': customParam?[e],
+          };
+        }).nonNulls,
       ]
     };
   }

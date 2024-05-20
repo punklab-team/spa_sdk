@@ -21,6 +21,7 @@ class NetworkRequest extends NetworkHandler {
 
   @override
   Future<Map<String, dynamic>> postSpaMessage(EventSpa event, String uriServiceSpa) {
+    print("postSpaMessage");
     try {
       return _remoteHandler.postSpaMessage(event, uriServiceSpa);
     } catch (_) {
