@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 import 'package:uuid/uuid.dart';
+import 'event_manager.dart';
 import 'model/event_spa.dart';
 import 'network_request.dart';
 
@@ -60,6 +61,10 @@ class SpaSdk {
 
   static final NetworkRequest _networkRequest = NetworkRequest();
 
+  /// Event save and send
+
+  static final EventManager _eventManager = EventManager();
+
   /// Client information
 
   static late ClientInformation _clientInfo;
@@ -97,15 +102,14 @@ class SpaSdk {
   }
 
 
-  /// Send the event to the server
+  /// Save and send the event to the server
+  /// or Send to Delete this event in hive bd
   /// [event] is the event which need to send
   /// add the default data to the event
 
-  Future<Map<String, dynamic>> sendEvent(EventSpa event) async {
-    print("sendEvent");
-    return _networkRequest.postSpaMessage(
-        (await  _defaultDataEvent()).copyWith(event),
-      uriServiceSpa
+  Future<void> sendEvent(EventSpa event) async {
+    return _eventManager.saveEvent(
+      (await  _defaultDataEvent()).copyWith(event),
     );
   }
 
@@ -133,6 +137,8 @@ class SpaSdk {
         resolutionWidth: _window.physicalSize.width.toString(),
         resolutionHeight: _window.physicalSize.height.toString(),
         eventType: null,
+        id: const Uuid().v4(),
+        uriSand: uriServiceSpa,
       ),
     );
   }

@@ -2,6 +2,9 @@ PODS:
   - client_information (1.0.0):
     - Flutter
     - SAMKeychain
+  - connectivity_plus (0.0.1):
+    - Flutter
+    - FlutterMacOS
   - Flutter (1.0.0)
   - integration_test (0.0.1):
     - Flutter
@@ -13,6 +16,7 @@ PODS:
 
 DEPENDENCIES:
   - client_information (from `.symlinks/plugins/client_information/ios`)
+  - connectivity_plus (from `.symlinks/plugins/connectivity_plus/darwin`)
   - Flutter (from `Flutter`)
   - integration_test (from `.symlinks/plugins/integration_test/ios`)
   - location (from `.symlinks/plugins/location/ios`)
@@ -25,6 +29,8 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   client_information:
     :path: ".symlinks/plugins/client_information/ios"
+  connectivity_plus:
+    :path: ".symlinks/plugins/connectivity_plus/darwin"
   Flutter:
     :path: Flutter
   integration_test:
@@ -36,6 +42,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   client_information: cd2088b683015ea782082d6562d17e0320ae7097
+  connectivity_plus: ddd7f30999e1faaef5967c23d5b6d503d10434db
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   integration_test: 13825b8a9334a850581300559b8839134b124670
   location: d5cf8598915965547c3f36761ae9cc4f4e87d22e

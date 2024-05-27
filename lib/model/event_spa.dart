@@ -1,94 +1,104 @@
 import 'dart:convert';
 
+import 'package:hive/hive.dart';
+part 'event_spa.g.dart';
+
+@HiveType(typeId: 0)
 class EventSpa {
 
   /// The latitude and longitude of the user's location
   /// Need permission location
-
+  @HiveField(0)
   final String? latitude;
 
   /// The latitude and longitude of the user's location
   /// Need permission location
-
+  @HiveField(1)
   final String? longitude;
 
   /// The version of the library
-
+  @HiveField(2)
   final String? libraryVersion;
 
   /// The IP address of the user
   /// Use the [NetworkRequest.getIpAddress] to get the IP address
   /// Use service [https://api64.ipify.org]
   /// Need permission internet
-
+  @HiveField(3)
   final String? ipAddress;
 
   /// The screen of the app
   /// The screen is the current screen that the user is on
   /// Example: /home, /profile/settings
-
+  @HiveField(4)
   final String? appScreen;
 
   /// The version of the app
-
+  @HiveField(5)
   final String? appVersion;
 
   /// Unique user id is auth service
-
+  @HiveField(6)
   final String? userId;
 
   /// The session id created when the app is opened and destroyed when the app is closed
-
+  @HiveField(7)
   final String? sessionId;
 
   /// Unique counter id, counter get from the SPA service
-
+  @HiveField(8)
   final String? counterId;
 
   /// The type of the event
   /// Example: app_exception, link_opened
-
+  @HiveField(9)
   final String? eventType;
 
   /// The device id
-
+  @HiveField(10)
   final String? deviceId;
 
   /// The name of the app
-
+  @HiveField(11)
   final String? appName;
 
   /// The name of the device
-
+  @HiveField(12)
   final String? deviceName;
 
   /// The version of the OS
-
+  @HiveField(13)
   final String? osVersion;
 
   /// The name of the OS
-
+  @HiveField(14)
   final String? osName;
 
   /// The platform of the device
-
+  @HiveField(15)
   final String? platform;
 
   /// The language code of the device
-
+  @HiveField(16)
   final String? language;
 
   /// The width of the screen
-
+  @HiveField(17)
   final String? resolutionWidth;
 
   /// The height of the screen
-
+  @HiveField(18)
   final String? resolutionHeight;
 
   /// The custom parameter of the event
-
+  @HiveField(19)
   final Map<String, dynamic>? customParam;
+
+  @HiveField(21)
+  final String? id;
+
+  @HiveField(22)
+  final String? uriSand;
 
   const EventSpa({
     this.latitude,
@@ -114,6 +124,8 @@ class EventSpa {
     this.resolutionHeight,
 
     this.customParam,
+    this.id,
+    this.uriSand,
   });
 
   /// Convert this EventSpa to a json string
@@ -318,7 +330,7 @@ class EventSpa {
       'counterId' : counterId ?? '',
       'timestamp': date.toUtc().millisecondsSinceEpoch ~/ 1000,
       'channelType': "CustomScript",
-      'user_id': 'null',
+      'user_id': userId.toString(),
       'channelName' : "RegEvents API",
       'eventCaption': eventType ?? '',
       'customparams': [
@@ -363,12 +375,6 @@ class EventSpa {
             'name': 'deviceId',
             'type': 'STRING',
             'value': deviceId,
-          },
-        if(userId != null)
-          {
-            'name': 'userId',
-            'type': 'STRING',
-            'value': userId,
           },
         if(userId != null)
           {
@@ -430,12 +436,6 @@ class EventSpa {
             'type': 'STRING',
             'value': resolutionHeight,
           },
-        if(resolutionHeight != null)
-          {
-            'name': 'timeZone',
-            'type': 'STRING',
-            'value': date.timeZoneName,
-          },
         ...?customParam?.keys.map((e) {
           if(customParam?[e] == null) return null;
           return {
@@ -493,6 +493,8 @@ class EventSpa {
       resolutionWidth: event.resolutionWidth ?? resolutionWidth,
       resolutionHeight: event.resolutionHeight ?? resolutionHeight,
       customParam: event.customParam,
+      id: event.id ?? id,
+      uriSand: event.uriSand ?? uriSand,
     );
   }
 }

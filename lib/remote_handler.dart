@@ -29,12 +29,12 @@ class RemoteHandler extends NetworkHandler {
 
 
   @override
-  Future<Map<String, dynamic>> postSpaMessage(EventSpa event, String uriServiceSpa) async {
-    print("postSpaMessage");
+  Future<Map<String, dynamic>> postSpaMessage(EventSpa event) async {
+    if(event.uriSand == null) throw Exception('Error uriSand not null.');
     try {
       print(event.toJson);
       Response<dynamic> response = await _dio.post(
-        uriServiceSpa,
+        event.uriSand!,
         data: [event.toJson],
         options: Options(
           headers: {
@@ -42,9 +42,7 @@ class RemoteHandler extends NetworkHandler {
           },
         ),
       );
-      print("response.data");
       print(response.data);
-      print(response.statusCode);
       if (response.statusCode == 200) {
         return response.data;
       } else {
