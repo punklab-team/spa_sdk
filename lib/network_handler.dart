@@ -7,5 +7,5 @@ abstract class NetworkHandler {
   Future<Map<String, dynamic>> getIpAddress();
 
   /// Send spa massage to server.
-  Future<Map<String, dynamic>> postSpaMessage(EventSpa event, String uriServiceSpa);
+  Future<Map<String, dynamic>> postSpaMessage(EventSpa event);
 }

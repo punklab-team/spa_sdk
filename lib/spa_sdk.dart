@@ -1,10 +1,13 @@
 
+import 'dart:async';
 import 'dart:io';
 
 import 'package:client_information/client_information.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:location/location.dart';
 import 'package:uuid/uuid.dart';
+import 'event_manager.dart';
 import 'model/event_spa.dart';
 import 'network_request.dart';
 
@@ -16,15 +19,23 @@ class SpaSdk {
 
   static SpaSdk? _instance;
 
-  /// Singleton instance of the SpaSdk
+  /// Singleton init of the SpaSdk
   /// [counterId] is the counter id which is required to send the event
   /// [uriServiceSpa] is the uri of the server where the event will be sent
 
-  static SpaSdk instance({required String counterId, required String uriServiceSpa,}) => _instance ??= SpaSdk._(counterId: counterId, uriServiceSpa: uriServiceSpa);
+  static SpaSdk init({required String counterId, required String uriServiceSpa,}) => _instance = SpaSdk._(counterId: counterId, uriServiceSpa: uriServiceSpa);
 
   /// Version of the sdk
   
   static const String _version = "0.0.1";
+
+  /// Singleton instance of the SpaSdk
+
+  static SpaSdk get instance => _instance ?? SpaSdk._(counterId: "", uriServiceSpa: "");
+
+  /// Location instance
+
+  static Location location = Location();
 
   /// Counter id
 
@@ -50,9 +61,13 @@ class SpaSdk {
 
   static final NetworkRequest _networkRequest = NetworkRequest();
 
+  /// Event save and send
+
+  static final EventManager _eventManager = EventManager();
+
   /// Client information
 
-  static final ClientInformation _clientInfo = ClientInformation();
+  static late ClientInformation _clientInfo;
 
   /// Window instance for the flutter
 
@@ -63,6 +78,11 @@ class SpaSdk {
     required this.counterId,
   }){
     _initIpAddress();
+    _initClientInfo();
+  }
+
+  Future<void> _initClientInfo() async {
+    _clientInfo = await ClientInformation.fetch();
   }
 
   Future<void> _initIpAddress() async {
@@ -82,39 +102,44 @@ class SpaSdk {
   }
 
 
-  /// Send the event to the server
+  /// Save and send the event to the server
+  /// or Send to Delete this event in hive bd
   /// [event] is the event which need to send
   /// add the default data to the event
 
-  Future<Map<String, dynamic>> sendEvent(EventSpa event) {
-    return _networkRequest.postSpaMessage(
-      _defaultDataEvent().copyWith(event),
-      uriServiceSpa
+  Future<void> sendEvent(EventSpa event) async {
+    return _eventManager.saveEvent(
+      (await  _defaultDataEvent()).copyWith(event),
     );
   }
 
   /// Default data for the event
-  
-  EventSpa _defaultDataEvent() {
-    return EventSpa(
-      latitude: null,//_clientInfo.latitude,
-      longitude: null,//_clientInfo.longitude,
-      libraryVersion: _version,
-      ipAddress: _ip,
-      userId: _userId,
-      sessionId: _sessionId,
-      counterId: counterId,
-      appVersion: _clientInfo.applicationVersion,
-      deviceId: _clientInfo.deviceId,
-      appName: _clientInfo.applicationName,
-      deviceName: _clientInfo.deviceName,
-      osVersion: _clientInfo.osVersion,
-      osName: _clientInfo.osName,
-      platform: _getCurrentPlatform(),
-      language: _window.locale.languageCode,
-      resolutionWidth: _window.physicalSize.width.toString(),
-      resolutionHeight: _window.physicalSize.height.toString(),
-      eventType: null,
+
+  Future<EventSpa> _defaultDataEvent() async {
+    LocationData? locationData = await getLocation();
+    return Future.value(
+      EventSpa(
+        latitude: locationData?.latitude?.toString(),
+        longitude: locationData?.longitude?.toString(),
+        libraryVersion: _version,
+        ipAddress: _ip,
+        userId: _userId,
+        sessionId: _sessionId,
+        counterId: counterId,
+        appVersion: _clientInfo.applicationVersion,
+        deviceId: _clientInfo.deviceId,
+        appName: _clientInfo.applicationName,
+        deviceName: _clientInfo.deviceName,
+        osVersion: _clientInfo.osVersion,
+        osName: _clientInfo.osName,
+        platform: _getCurrentPlatform(),
+        language: _window.locale.languageCode,
+        resolutionWidth: _window.physicalSize.width.toString(),
+        resolutionHeight: _window.physicalSize.height.toString(),
+        eventType: null,
+        id: const Uuid().v4(),
+        uriSand: uriServiceSpa,
+      ),
     );
   }
 
@@ -124,5 +149,39 @@ class SpaSdk {
     if (kIsWeb) return "web";
 
     return Platform.operatingSystem;
+  }
+
+  /// Get the location data
+
+  Future<LocationData?> getLocation() async {
+
+    bool serviceEnabled = await location.serviceEnabled();
+    if (!serviceEnabled) return Future.value();
+
+    PermissionStatus permission = await location.hasPermission();
+    if (permission == PermissionStatus.denied) return Future.value();
+
+    try{
+      return await location.getLocation().timeout(const Duration(milliseconds: 500));
+    }catch(a){
+      return null;
+    }
+  }
+
+  /// Activate the location
+  /// if the location is not enabled
+  /// or the permission is not granted
+  /// ask the user to enable the location
+  /// and grant the permission
+
+  Future<dynamic> activateLocation() async {
+
+    bool serviceEnabled = await location.serviceEnabled();
+
+    if (!serviceEnabled) return await location.requestService();
+
+    PermissionStatus permission = await location.hasPermission();
+
+    if (permission == PermissionStatus.denied) return await location.requestPermission();
   }
 }

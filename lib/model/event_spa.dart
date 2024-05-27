@@ -1,94 +1,104 @@
 import 'dart:convert';
 
+import 'package:hive/hive.dart';
+part 'event_spa.g.dart';
+
+@HiveType(typeId: 0)
 class EventSpa {
 
   /// The latitude and longitude of the user's location
   /// Need permission location
-
+  @HiveField(0)
   final String? latitude;
 
   /// The latitude and longitude of the user's location
   /// Need permission location
-
+  @HiveField(1)
   final String? longitude;
 
   /// The version of the library
-
+  @HiveField(2)
   final String? libraryVersion;
 
   /// The IP address of the user
   /// Use the [NetworkRequest.getIpAddress] to get the IP address
   /// Use service [https://api64.ipify.org]
   /// Need permission internet
-
+  @HiveField(3)
   final String? ipAddress;
 
   /// The screen of the app
   /// The screen is the current screen that the user is on
   /// Example: /home, /profile/settings
-
+  @HiveField(4)
   final String? appScreen;
 
   /// The version of the app
-
+  @HiveField(5)
   final String? appVersion;
 
   /// Unique user id is auth service
-
+  @HiveField(6)
   final String? userId;
 
   /// The session id created when the app is opened and destroyed when the app is closed
-
+  @HiveField(7)
   final String? sessionId;
 
   /// Unique counter id, counter get from the SPA service
-
+  @HiveField(8)
   final String? counterId;
 
   /// The type of the event
   /// Example: app_exception, link_opened
-
+  @HiveField(9)
   final String? eventType;
 
   /// The device id
-
+  @HiveField(10)
   final String? deviceId;
 
   /// The name of the app
-
+  @HiveField(11)
   final String? appName;
 
   /// The name of the device
-
+  @HiveField(12)
   final String? deviceName;
 
   /// The version of the OS
-
+  @HiveField(13)
   final String? osVersion;
 
   /// The name of the OS
-
+  @HiveField(14)
   final String? osName;
 
   /// The platform of the device
-
+  @HiveField(15)
   final String? platform;
 
   /// The language code of the device
-
+  @HiveField(16)
   final String? language;
 
   /// The width of the screen
-
+  @HiveField(17)
   final String? resolutionWidth;
 
   /// The height of the screen
-
+  @HiveField(18)
   final String? resolutionHeight;
 
   /// The custom parameter of the event
-
+  @HiveField(19)
   final Map<String, dynamic>? customParam;
+
+  @HiveField(21)
+  final String? id;
+
+  @HiveField(22)
+  final String? uriSand;
 
   const EventSpa({
     this.latitude,
@@ -114,6 +124,8 @@ class EventSpa {
     this.resolutionHeight,
 
     this.customParam,
+    this.id,
+    this.uriSand,
   });
 
   /// Convert this EventSpa to a json string
@@ -252,10 +264,10 @@ class EventSpa {
   /// [pageLocation] is new screen uri
   /// [pageReferrer] is old screen uri
 
-  EventSpa.screenView(
-      String pageLocation,
-      String pageReferrer,
-      ) : this(
+  EventSpa.screenView({
+    required String pageLocation,
+    required String pageReferrer,
+  }) : this(
     eventType: "screen_view",
     customParam: {
       'page_location': pageLocation,
@@ -316,32 +328,122 @@ class EventSpa {
     return {
       'apiVersion': "1.0",
       'counterId' : counterId ?? '',
-      'timestamp': date.toUtc().millisecondsSinceEpoch.toString(),
+      'timestamp': date.toUtc().millisecondsSinceEpoch ~/ 1000,
       'channelType': "CustomScript",
+      'user_id': userId.toString(),
       'channelName' : "RegEvents API",
       'eventCaption': eventType ?? '',
       'customparams': [
-        {
-          if(latitude != null) 'latitude': latitude,
-          if(longitude != null) 'longitude': longitude,
-          if(osName != null) 'os_name': osName,
-          if(deviceName != null) 'device_name': deviceName,
-          if(libraryVersion != null) 'library': libraryVersion,
-          if(ipAddress != null) 'ip_address': ipAddress,
-          if(deviceId != null) 'device_id': deviceId,
-          if(userId != null) 'user_id': userId,
-          if(sessionId != null) 'session_id': sessionId,
-          if(appScreen != null) 'app_screen': appScreen,
-          if(osVersion != null) 'os_version': osVersion,
-          if(appVersion != null) 'release_version': appVersion,
-          if(appName != null) 'app_name': appName,
-          if(platform != null) 'platform': platform,
-          if(language != null) 'language': language,
-          if(resolutionWidth != null) 'resolution_width': resolutionWidth,
-          if(resolutionHeight != null) 'resolution_height': resolutionHeight,
-          'time_zone': date.timeZoneName,
-          ...?customParam,
-        }
+        if(latitude != null)
+          {
+            'name': 'latitude',
+            'type': 'STRING',
+            'value': latitude,
+          },
+        if(longitude != null)
+          {
+            'name': 'latitude',
+            'type': 'STRING',
+            'value': longitude,
+          },
+        if(osName != null)
+          {
+            'name': 'osName',
+            'type': 'STRING',
+            'value': osName,
+          },
+        if(deviceName != null)
+          {
+            'name': 'deviceName',
+            'type': 'STRING',
+            'value': deviceName,
+          },
+        if(libraryVersion != null)
+          {
+            'name': 'libraryVersion',
+            'type': 'STRING',
+            'value': libraryVersion,
+          },
+        if(ipAddress != null)
+          {
+            'name': 'ipAddress',
+            'type': 'STRING',
+            'value': ipAddress,
+          },
+        if(deviceId != null)
+          {
+            'name': 'deviceId',
+            'type': 'STRING',
+            'value': deviceId,
+          },
+        if(userId != null)
+          {
+            'name': 'userId',
+            'type': 'STRING',
+            'value': userId,
+          },
+        if(sessionId != null)
+          {
+            'name': 'sessionId',
+            'type': 'STRING',
+            'value': sessionId,
+          },
+        if(appScreen != null)
+          {
+            'name': 'appScreen',
+            'type': 'STRING',
+            'value': appScreen,
+          },
+        if(osVersion != null)
+          {
+            'name': 'osVersion',
+            'type': 'STRING',
+            'value': osVersion,
+          },
+        if(appVersion != null)
+          {
+            'name': 'appVersion',
+            'type': 'STRING',
+            'value': appVersion,
+          },
+        if(appName != null)
+          {
+            'name': 'appName',
+            'type': 'STRING',
+            'value': appName,
+          },
+        if(platform != null)
+          {
+            'name': 'platform',
+            'type': 'STRING',
+            'value': platform,
+          },
+        if(language != null)
+          {
+            'name': 'language',
+            'type': 'STRING',
+            'value': language,
+          },
+        if(resolutionWidth != null)
+          {
+            'name': 'resolutionWidth',
+            'type': 'STRING',
+            'value': resolutionWidth,
+          },
+        if(resolutionHeight != null)
+          {
+            'name': 'resolutionHeight',
+            'type': 'STRING',
+            'value': resolutionHeight,
+          },
+        ...?customParam?.keys.map((e) {
+          if(customParam?[e] == null) return null;
+          return {
+            'name': e,
+            'type': 'STRING',
+            'value': customParam?[e],
+          };
+        }).nonNulls,
       ]
     };
   }
@@ -391,6 +493,8 @@ class EventSpa {
       resolutionWidth: event.resolutionWidth ?? resolutionWidth,
       resolutionHeight: event.resolutionHeight ?? resolutionHeight,
       customParam: event.customParam,
+      id: event.id ?? id,
+      uriSand: event.uriSand ?? uriSand,
     );
   }
 }

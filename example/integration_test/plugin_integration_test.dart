@@ -6,20 +6,6 @@
 // For more information about Flutter integration tests, please see
 // https://docs.flutter.dev/cookbook/testing/integration/introduction
 
-
-import 'package:flutter_test/flutter_test.dart';
-import 'package:integration_test/integration_test.dart';
-import 'package:spa_sdk/model/event_spa.dart';
-
-import 'package:spa_sdk/spa_sdk.dart';
-
 void main() {
 
-
-  final SpaSdk plugin = SpaSdk.instance(counterId: "613", uriServiceSpa: "https://spa-back.gazprom-neft.ru/events");
-
-  testWidgets('getPlatformVersion test', (WidgetTester tester) async {
-    plugin.sendEvent(EventSpa.error(error: "404", errorValue: "text"));
-    expect(true, true);
-  });
 }

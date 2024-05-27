@@ -1,5 +1,6 @@
 
 import 'package:dio/dio.dart';
+import 'package:hive/hive.dart';
 import 'package:spa_sdk/spa_sdk.dart';
 import 'model/event_spa.dart';
 import 'network_handler.dart';
@@ -28,17 +29,20 @@ class RemoteHandler extends NetworkHandler {
 
 
   @override
-  Future<Map<String, dynamic>> postSpaMessage(EventSpa event, String uriServiceSpa) async {
+  Future<Map<String, dynamic>> postSpaMessage(EventSpa event) async {
+    if(event.uriSand == null) throw Exception('Error uriSand not null.');
     try {
+      print(event.toJson);
       Response<dynamic> response = await _dio.post(
-        uriServiceSpa,
-        data: event.toJson,
+        event.uriSand!,
+        data: [event.toJson],
         options: Options(
           headers: {
             'Content-Type': 'application/json',
           },
         ),
       );
+      print(response.data);
       if (response.statusCode == 200) {
         return response.data;
       } else {
