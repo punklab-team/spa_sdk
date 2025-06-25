@@ -1,102 +1,153 @@
-# spa_sdk
+# SPA SDK for Flutter
 
-SPA SDK for Flutter
+[![pub package](https://img.shields.io/pub/v/spa_sdk.svg)](https://pub.dev/packages/spa_sdk)  
+[![platform](https://img.shields.io/badge/platform-android%20%7C%20ios-blue.svg)](https://flutter.dev/)  
+[![License: MIT](https://img.shields.io/badge/license-MIT-lightgrey.svg)](LICENSE)
 
-## Getting Started
+**SPA SDK** — плагин для Flutter, предназначенный для сбора пользовательских событий и отправки их на сервер SPA (Система Пользовательской Аналитики). Поддерживается Android и iOS.
 
-This project is a starting point for a Flutter
-[plug-in package](https://flutter.dev/developing-packages/),
-a specialized package that includes platform-specific implementation code for
-Android and/or iOS. 
+---
 
-For help getting started with Flutter development, view the
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 📦 Установка
 
+Добавьте в `pubspec.yaml`:
 
-## Android
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
+```yaml
+dependencies:
+  spa_sdk: ^<последняя_версия>
+```
 
+Затем выполните:
 
-## iOS
-    // This is probably the only one you need. Background location is supported
-    // by this -- the caveat is that a blue badge is shown in the status bar
-    // when the app is using location service while in the background.
-    NSLocationWhenInUseUsageDescription
-    
-    // Deprecated, use NSLocationAlwaysAndWhenInUseUsageDescription instead.
-    NSLocationAlwaysUsageDescription
-    
-    // Use this very carefully. This key is required only if your iOS app
-    // uses APIs that access the user’s location information at all times,
-    // even if the app isn't running.
-    NSLocationAlwaysAndWhenInUseUsageDescription
+```bash
+flutter pub get
+```
 
-# spa_sdk
+---
 
-    Вы должны инициализировать SDK с помощью метода [SpaSdk.init]
-    Указав [SpaSdk.counterId] - идентификатор счетчика в СПА
-    и [SpaSdk.uriServiceSpa] - адрес сервера СПА
-    
-    После инициализации SDK можно использовать методы для отправки событий на сервер СПА
-    Для отправки события на сервер используйте метод [SpaSdk.sendEvent]
-    
-    Есть несколько дефолтных конструкторов для создания событий:
-    [EventSpa.appException] - для отправки исключений
-    [EventSpa.appUpdate] - для отправки событий об обновлении приложения
-    [EventSpa.linkOpened] - для отправки событий об открытии ссылки
-    [EventSpa.error] - для отправки ошибок
-    [EventSpa.fileOpenedInLink] - для отправки событий об открытии файла по ссылке
-    [EventSpa.firstOpen] - для отправки событий первого открытия приложения
-    [EventSpa.screenView] - для отправки событий просмотра экрана
-    [EventSpa.scroll] - для отправки событий скролла
-    [EventSpa.appSessionStart] - для отправки событий начала сессии
-    [EventSpa.appSessionEnd] - для отправки событий окончания сессии
-    [EventSpa.search] - для отправки событий поиска
-    [EventSpa.custom] - для отправки кастомных событий
-    
-    Дефолтные данные которые мы собираем и отправляем вместе с событием:
-    
-    [EventSpa.ipAddress] - ip адрес
-    [EventSpa.sessionId] - id сессии
-    [EventSpa.libraryVersion] - версия библиотеки
-    [EventSpa.counterId] - id счетчика
-    [EventSpa.appVersion] - версия приложения
-    [EventSpa.deviceId] - id устройства
-    [EventSpa.appName] - название приложения
-    [EventSpa.deviceName] - название устройства
-    [EventSpa.osVersion] - версия операционной системы
-    [EventSpa.osName] - название операционной системы
-    [EventSpa.platform] - платформа
-    [EventSpa.language] - язык
-    [EventSpa.resolutionWidth] - ширина экрана
-    [EventSpa.resolutionHeight] - высота экрана
-    [EventSpa.id] - id события
-    
-    Поля которые требуют дополнителые действия:
-    
-    [EventSpa.latitude] - широта
-    [EventSpa.longitude] - долгота
-    
-      Нужно вызвать метод [SpaSdk.activateLocation] для вызова разрешения на доступ к геолокации и добавления координат ко всем событиям
-    
-      Требуется добавить в Info.plist следующие строки:
-    
-      NSLocationAlwaysUsageDescription
-      NSLocationWhenInUseUsageDescription
-      NSLocationAlwaysAndWhenInUseUsageDescription
+## 🚀 Быстрый старт
 
-      И разрешения для Android
+### 1. Инициализация SDK
 
-      <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-      <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
-    
-    [EventSpa.userId] - id пользователя
-    
-     Нужно вызвать метод [SpaSdk.auth] для добавления id пользователя ко всем событиям
-    
-    
-    В случае возникновения ошибок при отправке событий, они сохраняются в локальной базе данных
-    и отправляются на сервер при следующей отправке событий
-    
+```dart
+await SpaSdk.init(
+  counterId: 'ваш-counter-id',
+  uriServiceSpa: Uri.parse('https://your-spa-server.com'),
+);
+```
+
+### 2. Отправка событий
+
+```dart
+SpaSdk.sendEvent(
+  EventSpa.screenView(screenName: 'HomePage'),
+);
+```
+
+---
+
+## 📲 Платформенные настройки
+
+### Android
+
+В `android/app/src/main/AndroidManifest.xml` добавьте:
+
+```xml
+<uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+<uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
+```
+
+### iOS
+
+В `ios/Runner/Info.plist` добавьте:
+
+```xml
+<key>NSLocationWhenInUseUsageDescription</key>
+<string>Приложению требуется доступ к вашей геолокации.</string>
+
+<key>NSLocationAlwaysUsageDescription</key>
+<string>Приложению требуется постоянный доступ к геолокации.</string>
+
+<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+<string>Приложению требуется доступ к геолокации даже в фоновом режиме.</string>
+```
+
+---
+
+## 🧾 Типы событий
+
+Используйте один из следующих конструкторов:
+
+| Метод                              | Назначение                          |
+|-----------------------------------|-------------------------------------|
+| `EventSpa.appException(...)`      | Исключения приложения               |
+| `EventSpa.appUpdate(...)`         | Обновление приложения               |
+| `EventSpa.linkOpened(...)`        | Открытие ссылки                     |
+| `EventSpa.error(...)`             | Ошибка                              |
+| `EventSpa.fileOpenedInLink(...)`  | Открытие файла по ссылке           |
+| `EventSpa.firstOpen()`            | Первое открытие приложения          |
+| `EventSpa.screenView(...)`        | Просмотр экрана                     |
+| `EventSpa.scroll(...)`            | Скролл                              |
+| `EventSpa.appSessionStart()`      | Начало сессии                       |
+| `EventSpa.appSessionEnd()`        | Завершение сессии                   |
+| `EventSpa.search(...)`            | Событие поиска                      |
+| `EventSpa.custom(...)`            | Кастомное событие                   |
+
+---
+
+## 📡 Автоматически добавляемые поля
+
+Каждое событие содержит следующие данные:
+
+- `ipAddress`
+- `sessionId`
+- `libraryVersion`
+- `counterId`
+- `appVersion`
+- `appName`
+- `deviceId`
+- `deviceName`
+- `osVersion`
+- `osName`
+- `platform`
+- `language`
+- `resolutionWidth`
+- `resolutionHeight`
+- `id` (уникальный ID события)
+
+---
+
+## 📍 Геолокация
+
+Чтобы добавить координаты `latitude` и `longitude` ко всем событиям:
+
+1. Вызовите метод:
+
+```dart
+await SpaSdk.activateLocation();
+```
+
+2. Убедитесь, что разрешения добавлены (см. выше раздел iOS/Android).
+
+---
+
+## 👤 Идентификатор пользователя
+
+Чтобы привязать `userId` ко всем событиям:
+
+```dart
+await SpaSdk.auth('user-id-123');
+```
+
+---
+
+## 💾 Обработка ошибок
+
+Если при отправке события возникает ошибка (например, отсутствие сети), оно сохраняется в локальную базу данных и будет автоматически отправлено при следующей успешной попытке.
+
+---
+
+## 📚 Полезные ссылки
+
+- [Создание Flutter-плагинов](https://flutter.dev/developing-packages/)
+- [Документация Flutter](https://flutter.dev/docs)
